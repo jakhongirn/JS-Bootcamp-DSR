@@ -14,9 +14,18 @@ module.exports = {
             use: ['babel-loader']
           },
           {
-            test: /\.(css)$/,
-            use: [MiniCssExtractPlugin.loader,'css-loader']
-         }
+            test: /\.(sa|sc|c)ss$/,
+            use: [
+              process.env.NODE_ENV !== 'production' ? 'style-loader' : MiniCssExtractPlugin.loader,
+              'css-loader',
+              'sass-loader'
+            ],
+          },
+          
+         {
+            test: /\.(png|jp(e*)g|svg|gif)$/,
+            use: ['file-loader'],
+          },
         ],
     },
       resolve: {

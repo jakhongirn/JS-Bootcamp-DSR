@@ -1,6 +1,7 @@
 .container {
     height: 100vh;
     background-color: #E7E3EB;
+    text-align: center;
 }
 
 .header {
