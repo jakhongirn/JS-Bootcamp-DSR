@@ -4,7 +4,7 @@ module.exports = {
     module: {
         rules: [
           {
-            test: /\.(js)$/,
+            test: /\.(js|jsx)$/,
             exclude: /node_modules/,
             use: ['babel-loader']
           }
@@ -18,6 +18,6 @@ module.exports = {
         filename: 'bundle.js',
     },
     devServer: {
-        contentBase: path.resolve(__dirname, './dist'),
+        static: path.resolve(__dirname, './public'),
     },
 }
