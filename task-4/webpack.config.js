@@ -1,67 +1,70 @@
-const path = require('path')
-const HTMLWebpackPlugin = require('html-webpack-plugin')
+const path = require('path');
+const HTMLWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
 
 module.exports = {
-  mode: 'development',
-  entry: './src/index.js',
-  output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist')
+  mode: "development",
+  entry: {
+    app: "./src/index.js"
   },
-  devtool: 'inline-source-map',  //Source Map — is the JSON file that keeps the information about how to transpile the minifed code into the original code.
-  plugins: [
-    new HTMLWebpackPlugin({  
-      template: './src/index.html',
-      filename: 'index.html'
-    }),
-    new MiniCssExtractPlugin({
-        filename: 'styles.scss',
-    }),
-  ],
+  devtool: 'inline-source-map',
+  devServer: {
+    contentBase: path.join(__dirname, './'), // where dev server will look for static files, not compiled
+    publicPath: '/', //relative path to output path where  devserver will look for compiled files
+  },
+  output: {
+    filename: 'js/[name].bundle.js',
+    path: path.resolve(__dirname, 'dist'), // base path where to send compiled assets
+    publicPath: '/' // base path where referenced files will be look for
+  },
+  resolve: {
+    extensions: ['*', '.js', '.jsx'],
+    alias: {
+      '@': path.resolve(__dirname, 'src') // shortcut to reference src folder from anywhere
+    }
+  },
   module: {
     rules: [
-      {
-        test: /\.js$/,
-        exclude: /(node_modules)/,
+      { // config for es6 jsx
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',     
-          options: {
-            presets: ['@babel/preset-env']
-          }
+          loader: "babel-loader"
         }
       },
-      {
-        test: /\.(png|svg|jpg|gif)$/,
-        use: [
-          'file-loader'
-        ]
-      },
-      {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader'
-        ],
-      },
-      {
+      { // config for sass compilation
         test: /\.scss$/,
         use: [
-          'style-loader',
+          {
+            loader: MiniCssExtractPlugin.loader
+          },
           'css-loader',
-          'sass-loader'
+          {
+            loader: "sass-loader"
+          }
         ]
       },
-      {
-        test: /\.html$/,
-        loader: 'html-loader',  
-        options: {
-          minimize: {             /* minimize - Default: true in production mode*/
-            minifyCSS: true,      //<style> internal
-            minifyJS: true,   
+      { // config for images
+        test: /\.(png|svg|jpg|jpeg|gif)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              outputPath: 'images',
+            }
           }
-        }
-      }
-    ],
+        ],
+      },
+    ]
   },
-}
+  plugins: [
+    new HTMLWebpackPlugin({ // plugin for inserting scripts into html
+    }),
+    new MiniCssExtractPlugin({ // plugin for controlling how compiled css will be outputted and named
+      filename: "css/[name].css",
+      chunkFilename: "css/[id].css"
+    })
+  ]
+ };
