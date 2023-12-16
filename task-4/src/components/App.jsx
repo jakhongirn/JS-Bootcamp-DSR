@@ -1,8 +1,13 @@
-import React from 'react'
+import React from 'react';
+import '../styles.css';
 
 const App = () => {
   return (
-    <div>Hello React from DSR!</div>
+    <div className="container">
+            <div className="header">
+                <h1>Hello React from DSR!</h1>
+            </div>
+        </div>
   )
 }
 
